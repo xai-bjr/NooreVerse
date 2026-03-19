@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('appContainer').style.display = 'block';
     }, 2000);
     
-    // Simple 3D background (very lightweight)
+    // Simple 3D background (very lightweight
     initSimple3D();
     
     // Setup all buttons
