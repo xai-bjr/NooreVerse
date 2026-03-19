@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NoorVerse - Your Digital Islamic Sanctuary</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Three.js Libraries from CDN -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="mosque-loader"></div>
+        <div class="loading-text">نور</div>
+        <div class="loading-progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="app-container" id="appContainer" style="display: none;">
+        <!-- 3D Canvas Background -->
+        <canvas id="bgCanvas"></canvas>
+        
+        <!-- Floating Particles Container -->
+        <div id="particles-container"></div>
+
+        <!-- Header Navigation -->
+        <header class="glass-header">
+            <div class="logo-container">
+                <div class="logo-3d" id="logo3D">
+                    <span class="arabic-logo">ن</span>
+                    <span class="logo-text">NoorVerse</span>
+                </div>
+            </div>
+            
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#home" class="nav-item active"><i class="fas fa-home"></i><span>Home</span></a></li>
+                    <li><a href="#quran" class="nav-item"><i class="fas fa-book"></i><span>Quran</span></a></li>
+                    <li><a href="#prayers" class="nav-item"><i class="fas fa-mosque"></i><span>Prayers</span></a></li>
+                    <li><a href="#dhikr" class="nav-item"><i class="fas fa-prayer-beads"></i><span>Dhikr</span></a></li>
+                    <li><a href="#gallery" class="nav-item"><i class="fas fa-images"></i><span>Gallery</span></a></li>
+                    <li><a href="#videos" class="nav-item"><i class="fas fa-video"></i><span>Videos</span></a></li>
+                    <li><a href="#community" class="nav-item"><i class="fas fa-users"></i><span>Community</span></a></li>
+                </ul>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Search..." class="search-input">
+                    <button class="voice-search"><i class="fas fa-microphone"></i></button>
+                </div>
+                
+                <div class="user-profile">
+                    <div class="profile-avatar" id="profileAvatar">
+                        <img src="https://via.placeholder.com/40/8B5CF6/FFFFFF?text=User" alt="Profile">
+                    </div>
+                    <div class="profile-dropdown">
+                        <a href="#profile">Profile</a>
+                        <a href="#settings">Settings</a>
+                        <a href="#logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile Sidebar Toggle -->
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Home Section -->
+            <section id="home" class="section active">
+                <div class="hero-section">
+                    <h1 class="hero-title">NoorVerse</h1>
+                    <p class="hero-subtitle">Your Digital Sanctuary</p>
+                    
+                    <div class="quick-actions-grid">
+                        <div class="quick-card glass-card" id="prayerTimesCard">
+                            <i class="fas fa-clock"></i>
+                            <span class="card-label">Next Prayer</span>
+                            <span class="card-value" id="nextPrayer">Fajr</span>
+                            <span class="card-time" id="prayerTime">05:30 AM</span>
+                            <div class="prayer-progress">
+                                <div class="progress-fill" id="prayerProgress"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-card glass-card" id="qiblaCard">
+                            <i class="fas fa-compass"></i>
+                            <span class="card-label">Qibla Direction</span>
+                            <div class="compass-3d" id="compass">
+                                <div class="compass-needle"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-card glass-card" id="dateCard">
+                            <i class="fas fa-calendar"></i>
+                            <span class="card-label">Islamic Date</span>
+                            <span class="card-value" id="hijriDate">1 Muharram 1446</span>
+                            <span class="card-time" id="gregorianDate">July 7, 2024</span>
+                        </div>
+                        
+                        <div class="quick-card glass-card" id="quranProgressCard">
+                            <i class="fas fa-quran"></i>
+                            <span class="card-label">Quran Progress</span>
+                            <span class="card-value" id="quranProgress">27%</span>
+                            <div class="progress-ring">
+                                <svg width="60" height="60">
+                                    <circle class="progress-ring-bg" stroke="#3c1e5c" stroke-width="4" fill="transparent" r="26" cx="30" cy="30"/>
+                                    <circle class="progress-ring-fill" stroke="#8B5CF6" stroke-width="4" fill="transparent" r="26" cx="30" cy="30"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Prayer Times Module -->
+                <div class="module-section">
+                    <h2 class="module-title"><i class="fas fa-clock"></i> Prayer Times</h2>
+                    <div class="prayer-times-grid" id="prayerTimesGrid">
+                        <div class="prayer-card glass-card" data-prayer="fajr">
+                            <div class="prayer-name">Fajr</div>
+                            <div class="prayer-time">05:30 AM</div>
+                            <div class="prayer-icon"><i class="fas fa-sun"></i></div>
+                            <label class="notification-toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="prayer-card glass-card" data-prayer="dhuhr">
+                            <div class="prayer-name">Dhuhr</div>
+                            <div class="prayer-time">12:30 PM</div>
+                            <div class="prayer-icon"><i class="fas fa-sun"></i></div>
+                            <label class="notification-toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="prayer-card glass-card" data-prayer="asr">
+                            <div class="prayer-name">Asr</div>
+                            <div class="prayer-time">03:45 PM</div>
+                            <div class="prayer-icon"><i class="fas fa-cloud-sun"></i></div>
+                            <label class="notification-toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="prayer-card glass-card" data-prayer="maghrib">
+                            <div class="prayer-name">Maghrib</div>
+                            <div class="prayer-time">06:15 PM</div>
+                            <div class="prayer-icon"><i class="fas fa-moon"></i></div>
+                            <label class="notification-toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="prayer-card glass-card" data-prayer="isha">
+                            <div class="prayer-name">Isha</div>
+                            <div class="prayer-time">08:00 PM</div>
+                            <div class="prayer-icon"><i class="fas fa-moon"></i></div>
+                            <label class="notification-toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quran Section -->
+            <section id="quran" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-book"></i> Holy Quran</h2>
+                    <div class="quran-controls">
+                        <button class="control-btn" id="nightMode"><i class="fas fa-moon"></i></button>
+                        <div class="font-control">
+                            <button class="font-btn" id="fontDecrease">A-</button>
+                            <span id="fontSize">16px</span>
+                            <button class="font-btn" id="fontIncrease">A+</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quran-reader-container">
+                    <div class="quran-3d-placeholder" id="quran3DViewer">
+                        <!-- 3D Quran will render here -->
+                        <div class="quran-cover"></div>
+                    </div>
+                    
+                    <div class="surah-list glass-card">
+                        <div class="surah-search">
+                            <input type="text" placeholder="Search Surah..." id="surahSearch">
+                        </div>
+                        <div class="surah-items" id="surahList">
+                            <!-- Surah items will be populated via JS -->
+                        </div>
+                    </div>
+                    
+                    <div class="quran-reader glass-card" id="quranReader">
+                        <div class="reader-header">
+                            <h3 id="currentSurah">Al-Fatiha</h3>
+                            <span id="currentAyah">1:1</span>
+                        </div>
+                        <div class="arabic-text" id="arabicAyah">
+                            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                        </div>
+                        <div class="translation-text" id="translation">
+                            In the name of Allah, the Most Gracious, the Most Merciful
+                        </div>
+                        <div class="transliteration-text" id="transliteration">
+                            Bismillahir Rahmanir Rahim
+                        </div>
+                        
+                        <div class="audio-controls">
+                            <button class="play-btn" id="playAyah"><i class="fas fa-play"></i></button>
+                            <div class="waveform" id="waveform"></div>
+                            <select class="reciter-select" id="reciterSelect">
+                                <option value="mishary">Mishary Al-Afasy</option>
+                                <option value="sudais">Abdul Rahman Al-Sudais</option>
+                                <option value="shuraim">Saud Al-Shuraim</option>
+                            </select>
+                        </div>
+                        
+                        <div class="ayah-actions">
+                            <button class="action-btn" id="bookmarkAyah"><i class="fas fa-bookmark"></i> Bookmark</button>
+                            <button class="action-btn" id="shareAyah"><i class="fas fa-share"></i> Share</button>
+                            <button class="action-btn" id="tafsirAyah"><i class="fas fa-info-circle"></i> Tafsir</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dhikr Section -->
+            <section id="dhikr" class="section">
+                <h2 class="module-title"><i class="fas fa-prayer-beads"></i> Dhikr & Duas</h2>
+                
+                <div class="dhikr-container">
+                    <div class="tasbih-3d" id="tasbih3D">
+                        <!-- 3D Tasbih will render here -->
+                        <div class="tasbih-beads">
+                            <div class="bead"></div>
+                            <div class="bead"></div>
+                            <div class="bead"></div>
+                            <div class="bead"></div>
+                            <div class="bead"></div>
+                            <div class="bead"></div>
+                            <div class="bead"></div>
+                            <div class="bead"></div>
+                            <div class="bead"></div>
+                            <div class="bead"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="dhikr-categories">
+                        <button class="category-btn active" data-category="morning">Morning</button>
+                        <button class="category-btn" data-category="evening">Evening</button>
+                        <button class="category-btn" data-category="after-prayer">After Prayer</button>
+                        <button class="category-btn" data-category="sleeping">Sleeping</button>
+                    </div>
+                    
+                    <div class="dhikr-counter glass-card">
+                        <div class="current-dhikr" id="currentDhikr">
+                            <h3>Subhanallah</h3>
+                            <p>Glory be to Allah</p>
+                        </div>
+                        
+                        <div class="counter-display">
+                            <span class="count" id="dhikrCount">33</span>
+                            <span class="target">/33</span>
+                        </div>
+                        
+                        <div class="counter-actions">
+                            <button class="counter-btn" id="tapDhikr">
+                                <i class="fas fa-hand-pointer"></i> Tap
+                            </button>
+                            <button class="counter-btn" id="resetDhikr">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                        
+                        <div class="streak-info">
+                            <i class="fas fa-fire"></i>
+                            <span id="streakDays">7 Day Streak</span>
+                        </div>
+                    </div>
+                    
+                    <div class="daily-dua glass-card">
+                        <h3>Daily Dua</h3>
+                        <p class="dua-arabic">رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ</p>
+                        <p class="dua-translation">Our Lord, give us in this world [that which is] good and in the Hereafter [that which is] good and protect us from the punishment of the Fire</p>
+                        <button class="copy-dua"><i class="fas fa-copy"></i> Copy</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video Gallery Section -->
+            <section id="videos" class="section">
+                <h2 class="module-title"><i class="fas fa-video"></i> Video Gallery</h2>
+                
+                <div class="video-categories">
+                    <button class="category-filter active">All</button>
+                    <button class="category-filter">Recitation</button>
+                    <button class="category-filter">Lectures</button>
+                    <button class="category-filter">Nasheeds</button>
+                    <button class="category-filter">Documentaries</button>
+                    <button class="category-filter">Kids</button>
+                </div>
+                
+                <div class="video-grid" id="videoGrid">
+                    <!-- Video cards will be populated via JS -->
+                    <div class="video-card glass-card">
+                        <div class="video-thumbnail">
+                            <img src="https://via.placeholder.com/300x200/2D1B4A/8B5CF6?text=Quran+Recitation" alt="Video">
+                            <span class="video-duration">45:30</span>
+                            <button class="play-video"><i class="fas fa-play"></i></button>
+                        </div>
+                        <div class="video-info">
+                            <h4>Surah Al-Kahf</h4>
+                            <p>Mishary Al-Afasy</p>
+                            <span class="video-views">124K views</span>
+                        </div>
+                    </div>
+                    
+                    <div class="video-card glass-card">
+                        <div class="video-thumbnail">
+                            <img src="https://via.placeholder.com/300x200/2D1B4A/FFD700?text=Islamic+Lecture" alt="Video">
+                            <span class="video-duration">1:15:20</span>
+                            <button class="play-video"><i class="fas fa-play"></i></button>
+                        </div>
+                        <div class="video-info">
+                            <h4>The Purpose of Life</h4>
+                            <p>Yasir Qadhi</p>
+                            <span class="video-views">89K views</span>
+                        </div>
+                    </div>
+                    
+                    <div class="video-card glass-card">
+                        <div class="video-thumbnail">
+                            <img src="https://via.placeholder.com/300x200/2D1B4A/C4B5FD?text=Nasheed" alt="Video">
+                            <span class="video-duration">4:15</span>
+                            <button class="play-video"><i class="fas fa-play"></i></button>
+                        </div>
+                        <div class="video-info">
+                            <h4>Ya Taybah</h4>
+                            <p>Maher Zain</p>
+                            <span class="video-views">2.1M views</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Photo Gallery Section -->
+            <section id="gallery" class="section">
+                <h2 class="module-title"><i class="fas fa-images"></i> Photo Gallery</h2>
+                
+                <div class="gallery-categories">
+                    <button class="gallery-filter active">All</button>
+                    <button class="gallery-filter">Mosques</button>
+                    <button class="gallery-filter">Islamic Art</button>
+                    <button class="gallery-filter">Nature</button>
+                    <button class="gallery-filter">Hajj</button>
+                </div>
+                
+                <div class="photo-grid" id="photoGrid">
+                    <!-- Photo items will be populated via JS -->
+                    <div class="photo-item glass-card">
+                        <img src="https://via.placeholder.com/400x300/2D1B4A/8B5CF6?text=Mosque" alt="Gallery">
+                        <div class="photo-overlay">
+                            <h4>Masjid Al-Haram</h4>
+                            <button class="view-photo"><i class="fas fa-search-plus"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="photo-item glass-card">
+                        <img src="https://via.placeholder.com/400x300/2D1B4A/FFD700?text=Islamic+Art" alt="Gallery">
+                        <div class="photo-overlay">
+                            <h4>Islamic Calligraphy</h4>
+                            <button class="view-photo"><i class="fas fa-search-plus"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="photo-item glass-card">
+                        <img src="https://via.placeholder.com/400x300/2D1B4A/C4B5FD?text=Nature" alt="Gallery">
+                        <div class="photo-overlay">
+                            <h4>Sunset in Makkah</h4>
+                            <button class="view-photo"><i class="fas fa-search-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Community Section -->
+            <section id="community" class="section">
+                <h2 class="module-title"><i class="fas fa-users"></i> Community</h2>
+                
+                <div class="community-grid">
+                    <div class="community-card glass-card">
+                        <i class="fas fa-comments"></i>
+                        <h3>Discussion Forums</h3>
+                        <p>Join conversations with Muslims worldwide</p>
+                        <button class="community-btn">Explore</button>
+                    </div>
+                    
+                    <div class="community-card glass-card">
+                        <i class="fas fa-mosque"></i>
+                        <h3>Local Mosques</h3>
+                        <p>Find mosques near your location</p>
+                        <button class="community-btn" id="findMosques">Find Near Me</button>
+                    </div>
+                    
+                    <div class="community-card glass-card">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <h3>Charity Campaigns</h3>
+                        <p>Support causes in your community</p>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 75%;"></div>
+                        </div>
+                        <span>$7,500 raised of $10,000</span>
+                    </div>
+                    
+                    <div class="community-card glass-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Local Events</h3>
+                        <p>Islamic events near you</p>
+                        <button class="community-btn">View Events</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Floating Action Button -->
+        <button class="fab" id="fab">
+            <i class="fas fa-plus"></i>
+        </button>
+
+        <!-- Quick Action Menu -->
+        <div class="quick-menu" id="quickMenu">
+            <button class="quick-menu-item" data-action="prayer"><i class="fas fa-clock"></i> Prayer Times</button>
+            <button class="quick-menu-item" data-action="qibla"><i class="fas fa-compass"></i> Qibla</button>
+            <button class="quick-menu-item" data-action="dhikr"><i class="fas fa-prayer-beads"></i> Dhikr</button>
+            <button class="quick-menu-item" data-action="quran"><i class="fas fa-book"></i> Quran</button>
+        </div>
+
+        <!-- Import/Export Modal -->
+        <div class="modal" id="importExportModal">
+            <div class="modal-content glass-card">
+                <div class="modal-header">
+                    <h3>Import / Export</h3>
+                    <button class="close-modal"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="import-section">
+                        <h4>Import</h4>
+                        <div class="import-options">
+                            <button class="import-option"><i class="fas fa-cloud-upload-alt"></i> Cloud</button>
+                            <button class="import-option"><i class="fas fa-images"></i> Photos</button>
+                            <button class="import-option"><i class="fas fa-file-pdf"></i> PDF</button>
+                            <button class="import-option"><i class="fas fa-qrcode"></i> QR Code</button>
+                        </div>
+                    </div>
+                    <div class="export-section">
+                        <h4>Export</h4>
+                        <div class="export-options">
+                            <button class="export-option"><i class="fas fa-download"></i> Save Offline</button>
+                            <button class="export-option"><i class="fas fa-share-alt"></i> Share</button>
+                            <button class="export-option"><i class="fas fa-print"></i> Print</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="modal" id="settingsModal">
+            <div class="modal-content glass-card">
+                <div class="modal-header">
+                    <h3>Settings</h3>
+                    <button class="close-modal"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-section">
+                        <h4>3D Preferences</h4>
+                        <div class="setting-item">
+                            <label>Animation Intensity</label>
+                            <input type="range" min="0" max="100" value="70" id="animationIntensity">
+                        </div>
+                        <div class="setting-item">
+                            <label>3D Depth</label>
+                            <input type="range" min="0" max="100" value="50" id="depthSetting">
+                        </div>
+                        <div class="setting-item">
+                            <label>Performance Mode</label>
+                            <input type="checkbox" id="performanceMode">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Prayer Settings</h4>
+                        <div class="setting-item">
+                            <label>Calculation Method</label>
+                            <select id="calculationMethod">
+                                <option>Muslim World League</option>
+                                <option>Egyptian General Authority</option>
+                                <option>Umm Al-Qura</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Audio Quality</h4>
+                        <div class="setting-item">
+                            <label>Streaming Quality</label>
+                            <select id="audioQuality">
+                                <option>Low (64 kbps)</option>
+                                <option selected>Medium (128 kbps)</option>
+                                <option>High (320 kbps)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main JavaScript -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
